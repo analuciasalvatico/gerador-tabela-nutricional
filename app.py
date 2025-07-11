@@ -72,4 +72,4 @@ if st.button("Gerar Imagem PNG"):
         nome, qtde, vd = item
         draw.text((10, y), nome, font=fonte)
         draw.text((160, y), qtde, font=fonte)
-        draw.text((300, y), vd,
+        draw.text((300, y), vd,)
