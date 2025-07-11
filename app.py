@@ -49,4 +49,27 @@ for extra, incluir in extras.items():
 # Botão para gerar imagem
 if st.button("Gerar Imagem PNG"):
     largura, altura = 400, 300
-    img = Image.new("RGB", (largura, altura),
+    img = Image.new("RGB", (largura, altura), "white")
+    draw = ImageDraw.Draw(img)
+    fonte = ImageFont.load_default()
+
+    # Cabeçalho da tabela
+    draw.rectangle([0, 0, largura - 1, altura - 1], outline="black")
+    draw.text((10, 10), "INFORMAÇÃO NUTRICIONAL", fill="black", font=fonte)
+    draw.text((10, 30), f"Porção de {porcao}", fill="black", font=fonte)
+
+    y = 55
+    draw.text((10, y), "Nutriente", font=fonte)
+    draw.text((160, y), "Quant.", font=fonte)
+    draw.text((300, y), "%VD", font=fonte)
+    y += 15
+    draw.line([0, y, largura, y], fill="black")
+    y += 5
+
+    for item in dados:
+        if y + 20 > altura:
+            break
+        nome, qtde, vd = item
+        draw.text((10, y), nome, font=fonte)
+        draw.text((160, y), qtde, font=fonte)
+        draw.text((300, y), vd,
