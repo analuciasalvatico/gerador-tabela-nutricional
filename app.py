@@ -5,7 +5,7 @@ import io
 st.set_page_config(page_title="Tabela Nutricional", layout="centered")
 
 st.title("🍽️ Gerador de Tabela Nutricional (ANVISA)")
-st.markdown("Preencha os dados abaixo e baixe a imagem PNG gerada com tamanho fixo 400x300 px.")
+st.markdown("Preencha os dados abaixo e baixe a imagem PNG gerada com tamanho automático.")
 
 # Entrada da porção
 porcao = st.text_input("Porção", "100g")
@@ -46,12 +46,21 @@ for extra, ativo in extras.items():
         vd = st.text_input(f"{extra} - %VD", "0", key=extra+"_v")
         dados.append((extra, qtde, vd))
 
+# Pré-visualização dos dados
+st.markdown("### Prévia dos dados:")
+st.write(dados)
+
 # Geração da imagem
 if st.button("Gerar Imagem PNG"):
-    largura, altura = 400, 300
+    largura = 400
+    altura = 100 + len(dados) * 25  # altura mínima de 100, cresce com o número de linhas
     img = Image.new("RGB", (largura, altura), "white")
     draw = ImageDraw.Draw(img)
-    fonte = ImageFont.load_default()
+
+    try:
+        fonte = ImageFont.truetype("arial.ttf", 14)
+    except:
+        fonte = ImageFont.load_default()
 
     # Cabeçalho
     draw.rectangle([0, 0, largura - 1, altura - 1], outline="black")
@@ -69,8 +78,6 @@ if st.button("Gerar Imagem PNG"):
 
     # Dados
     for nome, qtde, vd in dados:
-        if y + 20 > altura:
-            break
         draw.text((10, y), nome, font=fonte)
         draw.text((160, y), qtde, font=fonte)
         draw.text((300, y), vd, font=fonte)
@@ -81,5 +88,5 @@ if st.button("Gerar Imagem PNG"):
     img.save(buf, format="PNG")
     byte_im = buf.getvalue()
 
-    st.image(byte_im, caption="Imagem gerada (400x300 px)")
+    st.image(byte_im, caption="Imagem gerada com dados")
     st.download_button("📥 Baixar imagem PNG", byte_im, file_name="tabela_nutricional.png", mime="image/png")
